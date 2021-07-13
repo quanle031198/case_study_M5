@@ -1,0 +1,393 @@
+<div class="wrapper">
+  <div class="container container2">
+    <div class="filter-player row">
+      <div xl="12" class="col-lg-12 col-md-12 col-sm-12">
+
+        <section id="search">
+          <div class="player-select div-autoComplete-search">
+            <label for="search-input"><i class="fa fa-search" aria-hidden="true"></i><span class="sr-only">Search
+                Players</span></label><i class="fa fa-bars setting-search-index" aria-hidden="true"></i><input
+              class="form-control input-lg" placeholder="Tên game" autocomplete="off" spellcheck="false"
+              autocorrect="off" tabindex="1" name="gameCategory" type="text" value="">
+            <div class="suggestion-game-hide"></div>
+          </div>
+        </section>
+      </div>
+      <div xl="12" class="col-lg-12 col-md-12 col-sm-12">
+        <section class="search-destop">
+          <div class="text-right col-md-3"></div>
+          <div class="col-md-4">
+            <div class="player-select div-autoComplete-search">
+              <input class="form-control" name="search_user_name" placeholder="Tên người yêu" type="text"
+                autocomplete="off" [(ngModel)]="search_user_name">
+              <div class="suggestion-game-hide"></div>
+            </div>
+          </div>
+          <div class="text-left col-md-3"><button class="btn btn-danger btn-filter" data-toggle="modal"
+              data-target="#filter">
+              <span>
+                Bộ lọc</span></button><button class="btn btn-success btn-search" (click)="searchUserName()"><span>Tìm
+                kiếm</span>&nbsp;</button></div>
+        </section>
+      </div>
+    </div>
+    <div class="list-player">
+      <div *ngIf="filter_user !== null">
+        <section class="box vip-player">
+          <h4 class="section-title">Kết quả tìm kiếm theo bộ lọc ({{this.count_filter}})</h4>
+          <button class="refresh-btn" (click)="removeFilter()"><i class="fas fa-sync fa-spin" aria-hidden="true"
+              style="margin-right: 5px;">
+            </i>
+            <span>Thoát khỏi bộ lọc</span>
+          </button>
+        </section>
+        <div class="row flex-card" *ngIf="count_filter >0">
+
+          <div class="player-information-card-wrap" *ngFor="let user of filter_user">
+            <div class="player-avatar">
+              <img src="{{base_Url_img+user.avatar}}" class="" alt="PD" id="avt-img-reponsiver"
+                style="object-fit: cover;">
+              <div class="player-price">{{user.price|number}} đ/h</div>
+              <div class="hidden-information">
+                <p>
+                  <span>{{user.count_view}} &nbsp;<i class="fas fa-eye"></i></span>
+                  <span>{{user.count_rent}} &nbsp;<i class="fa fa-download"></i><br></span>
+                </p>
+                <div class="rent"><a [routerLink]="['/frontend/provider-detail',user.id]" rel="noopener noreferrer"
+                    (click)="increaseView(user.id)">
+                    <span>Thuê ngay</span></a></div>
+              </div>
+            </div>
+            <div class="player-information">
+              <h3 class="player-name">
+                <a [routerLink]="['/frontend/provider-detail',user.id]">{{user.name}}</a>
+                <div class="player-status ready"> </div>
+              </h3>
+              <p class="player-title">{{ user.introducion }}</p>
+              <div class="category">
+                <div class="div--flex">
+                  <img
+                    src="https://png.pngtree.com/png-clipart/20190904/original/pngtree-love-flat-simple-hobby-icon-png-image_4478699.jpg"
+                    class="" alt="category logo">
+                  <span>{{user.hobby}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row flex-card" *ngIf="count_filter == 0">
+          <!-- Không tìm thấy kết quả phù hợp! -->
+          <table style="align-items: center; margin: auto;margin-top: 100px;">
+            <tr>
+              <td class="text-left">
+                <div style="text-align: center;">
+                  <h1 style="font-size: 100px;"><b>404</b></h1>
+                  <div>
+                    <button class="btn btn-danger btn-filter" (click)="removeFilter()"  >
+                    <span>
+                      Về  Trang Chủ
+                    </span>
+                    </button>
+                  </div>
+                  <h3>Có Vẻ Như Kêt Quả Mà Bạn</h3>
+                  <h3>Bạn Cần Tìm Không Có .......</h3>
+                </div>
+              </td>
+              <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+              <td class="text-right">
+                <img src="http://127.0.0.1:8000/storage/images/users/4mlogo.jpg" style="width: 270px;height: 270px;">
+              </td>
+            </tr>
+          </table>
+
+
+        </div>
+      </div>
+      <div>
+        <section class="box vip-player" *ngIf="filter_user == null">
+          <h4 class="section-title">Người Yêu Vip</h4>
+          <button hidden class="refresh-btn"><i class="fas fa-sync" aria-hidden="true"
+              style="margin-right: 5px;"></i><span>Làm
+              mới</span></button>
+        </section>
+        <div class="row flex-card" *ngIf="filter_user == null">
+
+          <div class="player-information-card-wrap" *ngFor="let user of vip_user">
+            <div class="player-avatar">
+              <img src="{{base_Url_img+user.avatar}}" class="" alt="PD" id="avt-img-reponsiver"
+                style="object-fit: cover;">
+              <div class="player-price">{{user.price|number}} đ/h</div>
+              <div class="hidden-information">
+                <p>
+                  <span>{{user.count_view}} &nbsp;<i class="fas fa-eye"></i> &nbsp;</span>
+                  <span>{{user.count_rent}} &nbsp;<i class="fa fa-download"></i><br></span>
+
+                </p>
+                <div class="rent"><a [routerLink]="['/frontend/provider-detail',user.id]" rel="noopener noreferrer"
+                    (click)="increaseView(user.id)">
+                    <span>Thuê ngay</span></a></div>
+              </div>
+            </div>
+            <div class="player-information">
+              <h3 class="player-name">
+                <a [routerLink]="['/frontend/provider-detail',user.id]"
+                  (click)="increaseView(user.id)">{{user.name}}</a>
+                <div class="player-status ready"> </div>
+              </h3>
+              <p class="player-title">{{ user.introducion }}</p>
+              <div class="category">
+                <div class="div--flex">
+                  <img
+                    src="https://png.pngtree.com/png-clipart/20190904/original/pngtree-love-flat-simple-hobby-icon-png-image_4478699.jpg"
+                    class="" alt="category logo">
+                  <span>{{user.hobby}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="filter_user == null">
+        <section class="hot-player">
+          <h4 class="section-title">Người Yêu Hot</h4>
+          <button hidden class="refresh-btn"><i class="fas fa-sync" aria-hidden="true"
+              style="margin-right: 5px;"></i><span>Làm
+              mới</span></button>
+        </section>
+        <div class="row flex-card">
+          <div class="player-information-card-wrap" *ngFor="let user of users">
+            <div class="player-avatar">
+              <img src="{{base_Url_img+user.avatar}}" class="" alt="PD" id="avt-img-reponsiver"
+                style="object-fit: cover;">
+              <div class="player-price">{{user.price|number}} đ/h</div>
+              <div class="hidden-information">
+                <p>
+                  <span>{{user.count_view}} &nbsp;<i class="fas fa-eye"></i></span>
+                  <span>{{user.count_rent}} &nbsp;<i class="fa fa-download"></i><br></span>
+                </p>
+                <div class="rent"><a [routerLink]="['/frontend/provider-detail',user.id]" rel="noopener noreferrer"
+                    (click)="increaseView(user.id)">
+                    <span>Thuê ngay</span></a></div>
+              </div>
+            </div>
+            <div class="player-information">
+              <h3 class="player-name">
+                <a [routerLink]="['/frontend/provider-detail',user.id]" rel="noopener noreferrer"
+                  (click)="increaseView(user.id)">{{user.name}} </a>
+                <div class="player-status ready"> </div>
+              </h3>
+              <p class="player-title">{{ user.introducion }}</p>
+              <div class="category">
+                <div class="div--flex">
+                  <img
+                    src="https://png.pngtree.com/png-clipart/20190904/original/pngtree-love-flat-simple-hobby-icon-png-image_4478699.jpg"
+                    class="" alt="category logo">
+                  <span>{{user.hobby}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <section class="rent-player" *ngIf="filter_user == null">
+          <h4 class="section-title"><span>Mới Tham Gia</span></h4>
+          <button hidden class="refresh-btn"><i aria-hidden="true" style="margin-right: 5px;"></i><span>Làm
+              mới</span></button>
+        </section>
+        <div class="row flex-card" *ngIf="filter_user == null">
+          <div class="player-information-card-wrap" *ngFor="let user of new_user">
+            <div class="player-avatar">
+              <img src="{{base_Url_img+user.avatar}}" class="" alt="PD" id="avt-img-reponsiver"
+                style="object-fit: cover;">
+              <div class="player-price">{{user.price|number}} đ/h</div>
+              <div class="hidden-information">
+                <p>
+                  <span>{{user.count_view}} &nbsp;<i class="fas fa-eye"></i></span>
+                  <span>{{user.count_rent}} &nbsp;<i class="fa fa-download"></i><br></span>
+                </p>
+                <div class="rent"><a [routerLink]="['/frontend/provider-detail',user.id]" rel="noopener noreferrer"
+                    (click)="increaseView(user.id)">
+                    <span>Thuê ngay</span></a></div>
+              </div>
+            </div>
+            <div class="player-information">
+              <h3 class="player-name">
+                <a [routerLink]="['/provider-detail',user.id]" (click)="increaseView(user.id)">{{user.name}}</a>
+                <div class="player-status ready"> </div>
+              </h3>
+              <p class="player-title">{{ user.introducion }}</p>
+              <div class="category">
+                <div class="div--flex">
+                  <img
+                    src="https://png.pngtree.com/png-clipart/20190904/original/pngtree-love-flat-simple-hobby-icon-png-image_4478699.jpg"
+                    class="" alt="category logo">
+                  <span>{{user.hobby}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="button-scroll-top" style="display: none;">
+  <button><i class="fas fa-chevron-up"></i></button>
+</div>
+<!-- Modal -->
+
+<div class="fade search-index-modal in modal" id="filter" tabindex="-1" role="dialog" aria-labelledby="filter"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form>
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+
+          </button>
+          <h4 class="modal-title"><span>Tôi muốn đối tác với điều kiện</span></h4>
+
+        </div>
+
+        <div class="content modal-body">
+
+          <table class="table">
+
+            <tbody>
+              <tr>
+                <td class="text-left"><span>Giới tính là</span></td>
+                <td class="text-right">
+                  <div data-toggle="buttons" class="btn-group">
+                    <label type="button" class="btn btn-default" (click)="clickEvent1()"
+                      [ngClass]="active1 ? 'active' : 'null'" id="Male" value="Male">
+                      <span>
+                        <i class="fa fa-mars" aria-hidden="true"></i>&nbsp;<span>Nam</span>
+                      </span>
+
+                    </label>
+
+                    <label type="button" class="btn btn-default" (click)="clickEvent2()"
+                      [ngClass]="active2 ? 'active' : 'null'" id="Female" value="Female"><span><i
+                          class="fa fa-venus" aria-hidden="true"></i>&nbsp;<span>Nữ</span></span></label>
+                  </div>
+                </td>
+
+                <td>
+                  <div data-toggle="buttons" class="btn-group"><label type="button" class="btn btn-default active"
+                      (click)="clickEvent3()"><span><i class="fa fa-times" aria-hidden="true"></i></span></label>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="text-left"><span>Giá Thuê</span></td>
+                <td class="text-right">
+                  <div class="mb-4"></div>
+                  <div class="player-select div-autoComplete-search">
+                    <input class="filter-modal" name="price" type="text" [ngModel]="filter.price | number" disabled>
+                    <div class="suggestion-game-hide"></div>
+                  </div>
+
+                  <input id="rangeInput" type="range" ng-model="model.range" min="0" max="10000000" step="100000"
+                    [(ngModel)]="filter.price">
+                </td>
+                <td>
+                  <div data-toggle="buttons" class="btn-group"><label type="button" class="btn btn-default active"
+                      (click)="removePrice()"><span><i class="fa fa-times" aria-hidden="true"></i></span></label>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="text-left"><span>Sống tại</span></td>
+                <td class="text-right">
+                  <div class="mb-4"></div>
+                  <div class="filter-modal">
+                    <select [(ngModel)]="filter.city" class="form-control">
+                      <option value="Hà Nội">Hà Nội</option>
+                      <option value="ho chi minh">Hồ Chí Minh</option>
+                      <option value="Đà Nẵng">Đà Nẵngw</option>
+                      <option value="">Khác</option>
+                    </select>
+                  </div>
+                </td>
+                <td>
+                  <div data-toggle="buttons" class="btn-group"><label type="button" class="btn btn-default active"
+                      (click)="removeCity()"><span><i class="fa fa-times" aria-hidden="true"></i></span></label>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="text-left"><span>Tên</span>/Người yêu:</td>
+                <td class="text-right">
+                  <div class="player-select div-autoComplete-search"><input class="filter-modal" name="user_name"
+                      type="text" autocomplete="off" maxlength="32" [(ngModel)]="filter.name"></div>
+                </td>
+                <td>
+                  <div data-toggle="buttons" class="btn-group"><label type="button" class="btn btn-default active"
+                      (click)="removeName()"><span><i class="fa fa-times" aria-hidden="true"></i></span></label>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="text-left"><span>Lượt xem</span></td>
+                <td class="text-right">
+                  <div data-toggle="buttons" class="btn-group">
+                    <label type="button" class="btn btn-default" (click)="clickMaxView()"
+                      [ngClass]="active_max ? 'active' : 'null'" id="max_view">
+                      <span>
+                        <i class="fa fa-level-up" aria-hidden="true"></i>&nbsp;<span>Cao nhất</span>
+                      </span>
+
+                    </label>
+
+                    <label type="button" class="btn btn-default" (click)="clickMinView()"
+                      [ngClass]="active_min ? 'active' : 'null'" id="min_view"><span><i class="fa fa-level-down"
+                          aria-hidden="true"></i>&nbsp;<span>Thấp Nhất</span></span></label>
+                  </div>
+                </td>
+
+                <td>
+                  <div data-toggle="buttons" class="btn-group"><label type="button" class="btn btn-default active"
+                      (click)="clearView()"><span><i class="fa fa-times" aria-hidden="true"></i></span></label>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td class="text-left"><span>Lượt thuê</span></td>
+                <td class="text-right">
+                  <div data-toggle="buttons" class="btn-group">
+                    <label type="button" class="btn btn-default" (click)="clickMaxRent()"
+                      [ngClass]="active_max_rent ? 'active' : 'null'" id="max_rent">
+                      <span>
+                        <i class="fa fa-level-up" aria-hidden="true"></i>&nbsp;<span>Cao nhất</span>
+                      </span>
+
+                    </label>
+
+                    <label type="button" class="btn btn-default" (click)="clickMinRent()"
+                      [ngClass]="active_min_rent ? 'active' : 'null'" id="min_rent"><span><i class="fa fa-level-down"
+                          aria-hidden="true"></i>&nbsp;<span>Thấp Nhất</span></span></label>
+                  </div>
+                </td>
+
+                <td>
+                  <div data-toggle="buttons" class="btn-group"><label type="button" class="btn btn-default active"
+                      (click)="clearRent()"><span><i class="fa fa-times" aria-hidden="true"></i></span></label>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+
+        <div class="text-center modal-footer"><button type="submit" class="btn btn-danger" (click)="saveFilter()"
+            data-dismiss="modal" aria-label="Close"><span>Bộ
+              lọc</span></button>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</div>
